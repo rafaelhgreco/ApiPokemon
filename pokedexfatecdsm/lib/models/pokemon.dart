@@ -16,7 +16,6 @@ class Pokemon {
     );
   }
 
-  // CORREÇÃO AQUI: As chaves devem ser em inglês para corresponder à API.
   Map<String, dynamic> toMap() {
     return {
       'id': id,

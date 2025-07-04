@@ -14,7 +14,6 @@ class Usuario {
     );
   }
 
-  // CORREÇÃO AQUI: A chave 'senha' deve ser 'password'.
   Map<String, dynamic> toMap() {
     return {
       'id': id,
