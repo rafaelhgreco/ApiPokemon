@@ -39,7 +39,7 @@ sudo lsof -i :3000
 Na raiz do projeto, execute:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 O parâmetro `--build` garante que todas as alterações do código sejam aplicadas nas imagens Docker.
@@ -82,12 +82,12 @@ flutter run
 
 ### Parar os contêineres
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Ver logs da aplicação
 ```bash
-docker-compose logs -f api-pokemon
+docker compose logs -f api-pokemon
 ```
 ### Ver tabelas do PostgreSQL
 ```bash
@@ -102,8 +102,8 @@ SELECT * FROM table_name
 
 ### Rebuild completo
 ```bash
-docker-compose down
-docker-compose up --build
+docker compose down
+docker compose up --build
 ```
 
 ## 🐛 Troubleshooting
