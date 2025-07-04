@@ -89,6 +89,16 @@ docker-compose down
 ```bash
 docker-compose logs -f api-pokemon
 ```
+### Ver tabelas do PostgreSQL
+```bash
+docker ps -a
+
+docker exec -it [ID_CONTAINER] psql -U user -d appdb
+
+\dt (Visualizar tabelas)
+
+SELECT * FROM table_name
+```
 
 ### Rebuild completo
 ```bash
