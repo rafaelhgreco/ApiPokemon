@@ -24,9 +24,8 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1, // Se precisar alterar a estrutura, incremente a versão e use onUpgrade
+      version: 1,
       onCreate: (db, version) async {
-        // Tabela de usuários com colunas em inglês
         await db.execute('''
           CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +34,6 @@ class DatabaseHelper {
           )
         ''');
 
-        // Tabela de pokémons com colunas em inglês
         await db.execute('''
           CREATE TABLE pokemons (
             id INTEGER PRIMARY KEY,
@@ -45,10 +43,8 @@ class DatabaseHelper {
           )
         ''');
 
-        // Inserindo usuário de exemplo com chaves em inglês
         await db.insert('users', {'email': 'fatec@pokemon.com', 'password': 'pikachu'});
 
-        // Lista de pokémons com chaves em inglês
         List<Map<String, dynamic>> pokemons = [
           {'id': 1, 'name': 'Bulbasaur', 'type': 'Grass/Poison', 'image': 'assets/images/bulbasaur.png'},
           {'id': 4, 'name': 'Charmander', 'type': 'Fire', 'image': 'assets/images/charmander.png'},
@@ -66,11 +62,11 @@ class DatabaseHelper {
     final db = await database;
     final result = await db.query(
       'users',
-      where: 'email = ? AND password = ?', // Coluna 'password'
+      where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
     if (result.isNotEmpty) {
-      return Usuario.fromMap(result.first); // Assumindo um construtor fromMap no seu modelo
+      return Usuario.fromMap(result.first);
     }
     return null;
   }
@@ -78,26 +74,40 @@ class DatabaseHelper {
   Future<List<Pokemon>> getPokemons() async {
     final db = await database;
     final result = await db.query('pokemons');
-    // Mapeando com chaves em inglês
-    return result.map((e) => Pokemon.fromMap(e)).toList(); // Assumindo um construtor fromMap no seu modelo
+    return result.map((e) => Pokemon.fromMap(e)).toList();
   }
 
-  // Novo método de sincronização em LOTE para a API Spring
+  // --- MÉTODO MODIFICADO ---
   Future<void> syncWithSpringApi() async {
     print("Iniciando sincronização com a API Spring...");
     final db = await database;
 
-    final users = await db.query('users');
-    final pokemons = await db.query('pokemons');
+    final usersFromDb = await db.query('users');
+    final pokemonsFromDb = await db.query('pokemons');
 
-    // Monta o corpo da requisição em um único objeto JSON
+    // **INÍCIO DA MODIFICAÇÃO**
+    // Processa a lista de usuários para remover a chave 'id' de cada mapa
+    final usersPayload = usersFromDb.map((user) {
+      final newUserMap = Map<String, dynamic>.from(user);
+      newUserMap.remove('id'); // Remove o campo 'id'
+      return newUserMap;
+    }).toList();
+
+    // Processa a lista de pokémons para remover a chave 'id'
+    final pokemonsPayload = pokemonsFromDb.map((pokemon) {
+      final newPokemonMap = Map<String, dynamic>.from(pokemon);
+      newPokemonMap.remove('id'); // Remove o campo 'id'
+      return newPokemonMap;
+    }).toList();
+    // **FIM DA MODIFICAÇÃO**
+
+
+    // Monta o corpo da requisição com os dados processados (sem o 'id')
     final syncPayload = {
-      'users': users,
-      'pokemons': pokemons,
+      'users': usersPayload,
+      'pokemons': pokemonsPayload,
     };
 
-    // ATENÇÃO: Se estiver testando em um emulador Android, use '10.0.2.2' para acessar o localhost da sua máquina.
-    // Se estiver em um dispositivo físico, use o IP da sua máquina na rede local (ex: '192.168.1.10').
     final url = Uri.parse('http://10.0.2.2:8080/api/sync');
 
     try {

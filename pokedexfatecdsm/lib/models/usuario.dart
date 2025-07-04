@@ -1,15 +1,25 @@
 class Usuario {
   final int? id;
   final String email;
-  final String senha;
+  final String password;
 
-  Usuario({this.id, required this.email, required this.senha});
+  Usuario({this.id, required this.email, required this.password});
 
+  // Método fromMap para criar um objeto a partir de um mapa (vindo do DB)
+  factory Usuario.fromMap(Map<String, dynamic> map) {
+    return Usuario(
+      id: map['id'],
+      email: map['email'],
+      password: map['password'],
+    );
+  }
+
+  // CORREÇÃO AQUI: A chave 'senha' deve ser 'password'.
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'email': email,
-      'senha': senha,
+      'password': password,
     };
   }
 }
