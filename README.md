@@ -5,7 +5,8 @@
 Antes de começar, certifique-se de ter instalado:
 
 - **WSL2** (Windows) ou **Linux** nativo
-- **Docker** e **Docker Compose**
+- **Docker** e **Docker Compose** [Como instalar docker no WSL](https://medium.com/@habbema/guia-de-instala%C3%A7%C3%A3o-do-docker-no-wsl-2-com-ubuntu-22-04-9ceabe4d79e8)
+- **JAVA 17**
 - **Flutter SDK** (para o frontend)
 
 ## 🐳 Configuração da API (Local)
@@ -65,6 +66,9 @@ http://localhost:3000
 ## 📱 Frontend Flutter
 
 ### Instalação
+```bash
+cd pokedexfatecdsm
+```
 ```bash
 flutter pub get
 ```
